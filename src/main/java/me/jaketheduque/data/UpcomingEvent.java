@@ -1,4 +1,5 @@
 package me.jaketheduque.data;
 
-public class UpcomingEvent {
-}
+import java.util.Date;
+
+public record UpcomingEvent(String id, String title, Date dueDate, Class linkedClass) {}
