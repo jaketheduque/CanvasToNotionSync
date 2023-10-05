@@ -22,27 +22,31 @@ public class UpcomingEventDeserializer extends StdDeserializer<UpcomingEvent> {
     public UpcomingEvent deserialize(JsonParser parser, DeserializationContext deserializer) {
         try {
             ObjectCodec codec = parser.getCodec();
-            JsonNode node = null;
+            JsonNode node;
             node = codec.readTree(parser);
 
             JsonNode titleNode = node.get("title");
             String title = titleNode.asText();
 
-            JsonNode assignment = node.get("assignment");
+            // Make sure the event has an assignment linked
+            if (node.hasNonNull("assignment")) {
+                JsonNode assignment = node.get("assignment");
 
-            JsonNode dueDateNode = assignment.get("due_at");
-            Date dueDate = Date.from(Instant.parse(dueDateNode.asText()));
+                JsonNode dueDateNode = assignment.get("due_at");
+                Date dueDate = Date.from(Instant.parse(dueDateNode.asText()));
 
-            JsonNode idNode = assignment.get("id");
-            String id = idNode.asText();
+                JsonNode idNode = assignment.get("id");
+                String id = idNode.asText();
 
-            JsonNode classNode = assignment.get("course_id");
-            String classID = classNode.asText();
-            Class assignmentClass = CanvasToNotionSync.CANVAS_CLASSES_MAP.get(classID);
+                JsonNode classNode = assignment.get("course_id");
+                String classID = classNode.asText();
+                Class assignmentClass = CanvasToNotionSync.CANVAS_CLASSES_MAP.get(classID);
 
-            return new UpcomingEvent(id, title, dueDate, assignmentClass);
+                return new UpcomingEvent(id, title, dueDate, assignmentClass);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 }

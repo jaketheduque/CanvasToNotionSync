@@ -17,10 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CanvasToNotionSync {
     public final static ResourceBundle PROPERTIES_FILE = ResourceBundle.getBundle("application");
@@ -29,7 +26,7 @@ public class CanvasToNotionSync {
     static {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<Class> classes = mapper.readValue(new File(PROPERTIES_FILE.getString("class_json_path")), new TypeReference<List<Class>>() {
+            List<Class> classes = mapper.readValue(new File(PROPERTIES_FILE.getString("class_json_path")), new TypeReference<>() {
             });
             Map<String, Class> tempMap = new HashMap<>();
             for (Class c : classes) {
@@ -60,6 +57,9 @@ public class CanvasToNotionSync {
         TypeFactory typeFactory = objectMapper.getTypeFactory();
         List<UpcomingEvent> eventsList = objectMapper.readValue(json, typeFactory.constructCollectionType(List.class, UpcomingEvent.class));
 
+        // Remove any null upcoming events (likely due to event not having linked assignment)
+        eventsList.removeIf(Objects::isNull);
+
         // Removes any UpcomingEvent objects that have a matching Canvas assignment ID in the Notion homework database
         eventsList.removeIf(e -> ids.contains(e.id()));
 
@@ -73,7 +73,6 @@ public class CanvasToNotionSync {
         con.setRequestProperty("Authorization", "Bearer " + PROPERTIES_FILE.getString("canvas_token"));
         con.setRequestMethod("GET");
 
-        int status = con.getResponseCode();
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
