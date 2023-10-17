@@ -4,10 +4,8 @@ import me.jaketheduque.data.Class;
 import me.jaketheduque.data.UpcomingEvent;
 import me.jaketheduque.main.CanvasToNotionSync;
 import notion.api.v1.NotionClient;
-import notion.api.v1.model.common.OptionColor;
 import notion.api.v1.model.common.PropertyType;
 import notion.api.v1.model.common.RichTextType;
-import notion.api.v1.model.databases.Database;
 import notion.api.v1.model.databases.QueryResults;
 import notion.api.v1.model.pages.Page;
 import notion.api.v1.model.pages.PageParent;
@@ -15,9 +13,6 @@ import notion.api.v1.model.pages.PageProperty;
 import notion.api.v1.request.databases.QueryDatabaseRequest;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
 public class NotionInterface {
@@ -48,7 +43,7 @@ public class NotionInterface {
             // Adds the given UpcomingEvent page to homework database as a Notion page
             client.createPage(PageParent.database(CanvasToNotionSync.PROPERTIES_FILE.getString("homework_database_id")), Map.of(
                     "name", new PageProperty(UUID.randomUUID().toString(), PropertyType.Title, Collections.singletonList(new PageProperty.RichText(RichTextType.Text, new PageProperty.RichText.Text(title.toLowerCase())))),
-                    "class", new PageProperty(UUID.randomUUID().toString(), PropertyType.Relation, null, null, null, null, null, null, null, null, null, null, null, null, null, Collections.singletonList(new PageProperty.PageReference(assignmentClass.getNotionPageID()))),
+                    "class", new PageProperty(UUID.randomUUID().toString(), PropertyType.Relation, null, null, null, null, null, null, null, null, null, null, null, null, null, assignmentClass != null ? Collections.singletonList(new PageProperty.PageReference(assignmentClass.getNotionPageID())) : new ArrayList<>()),
                     "due date", new PageProperty(UUID.randomUUID().toString(), PropertyType.Date, null, null, null, null, null, null, new PageProperty.Date(new SimpleDateFormat("yyyy-MM-dd").format(dueDate))),
                     "id", new PageProperty(UUID.randomUUID().toString(), PropertyType.RichText, null, Collections.singletonList(new PageProperty.RichText(RichTextType.Text, new PageProperty.RichText.Text(canvasID))))
             ), null, null, null);
