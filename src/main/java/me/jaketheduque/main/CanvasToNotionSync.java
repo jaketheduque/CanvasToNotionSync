@@ -45,7 +45,7 @@ public class CanvasToNotionSync {
     public static void main(String[] args) throws IOException, URISyntaxException {
         // Gets all upcoming MyMathLab homework
         ChromeDriver driver = new ChromeDriver();
-        MMLInterface mmlInterface = new MMLInterface(driver, null);
+        MMLInterface mmlInterface = new MMLInterface(driver, CANVAS_CLASSES_MAP.values().stream().filter(Class::isMmlEligible).findFirst().get());
         List<UpcomingEvent> mmlHomework = mmlInterface.getUpcomingHomework();
         driver.quit();
 
