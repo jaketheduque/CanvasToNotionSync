@@ -48,7 +48,7 @@ public class CanvasToNotionSync {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
         ChromeDriver driver = new ChromeDriver(options);
-        MMLInterface mmlInterface = new MMLInterface(driver, null);
+        MMLInterface mmlInterface = new MMLInterface(driver, CANVAS_CLASSES_MAP.values().stream().filter(Class::isMmlEligible).findFirst().get());
         List<UpcomingEvent> mmlHomework = mmlInterface.getUpcomingHomework();
         driver.quit();
 
