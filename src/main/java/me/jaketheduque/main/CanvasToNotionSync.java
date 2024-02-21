@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import me.jaketheduque.data.Class;
 import me.jaketheduque.data.UpcomingEvent;
 import me.jaketheduque.serializers.UpcomingEventDeserializer;
+import me.jaketheduque.util.MMLInterface;
 import me.jaketheduque.util.NotionInterface;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,6 +43,12 @@ public class CanvasToNotionSync {
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+        // Gets all upcoming MyMathLab homework
+        ChromeDriver driver = new ChromeDriver();
+        MMLInterface mmlInterface = new MMLInterface(driver, null);
+        List<UpcomingEvent> mmlHomework = mmlInterface.getUpcomingHomework();
+        driver.quit();
+
         // Gets the Canvas assignment IDs of assignments already added to the Notion page (does not matter if finished or not)
         List<String> ids = NotionInterface.getExistingAssignments();
 
@@ -57,13 +65,16 @@ public class CanvasToNotionSync {
         TypeFactory typeFactory = objectMapper.getTypeFactory();
         List<UpcomingEvent> eventsList = objectMapper.readValue(json, typeFactory.constructCollectionType(List.class, UpcomingEvent.class));
 
+        // Adds the MML assignments to the eventsList
+        eventsList.addAll(mmlHomework);
+
         // Remove any null upcoming events (likely due to event not having linked assignment)
         eventsList.removeIf(Objects::isNull);
 
         // Removes any UpcomingEvent objects that have a matching Canvas assignment ID in the Notion homework database
         eventsList.removeIf(e -> ids.contains(e.id()));
 
-        // Adds each remaining UpcomingEven to the Notion homework database
+        // Adds each remaining UpcomingEvents to the Notion homework database
         eventsList.forEach(NotionInterface::addCanvasAssignmentToNotion);
     }
 

@@ -11,13 +11,17 @@ public class Class {
     @JsonProperty("canvas_course_ids")
     private String[] canvasCourseIDs;
 
+    @JsonProperty("mml_eligible")
+    private boolean mmlEligible;
+
     public Class() {
     }
 
-    public Class(String name, String[] canvasCourseIDs, String notionPageID) {
+    public Class(String name, String[] canvasCourseIDs, String notionPageID, boolean mmlEligible) {
         this.name = name;
         this.canvasCourseIDs = canvasCourseIDs;
         this.notionPageID = notionPageID;
+        this.mmlEligible = mmlEligible;
     }
 
     public String getName() {
@@ -32,6 +36,10 @@ public class Class {
         return notionPageID;
     }
 
+    public boolean isMmlEligible() {
+        return mmlEligible;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -44,12 +52,17 @@ public class Class {
         this.canvasCourseIDs = canvasCourseIDs;
     }
 
+    public void setMmlEligible(boolean mmlEligible) {
+        this.mmlEligible = mmlEligible;
+    }
+
     @Override
     public String toString() {
         return "Class{" +
                 "name='" + name + '\'' +
                 ", notionPageID='" + notionPageID + '\'' +
                 ", canvasCourseIDs=" + Arrays.toString(canvasCourseIDs) +
+                ", mmlEligible=" + mmlEligible +
                 '}';
     }
 }
