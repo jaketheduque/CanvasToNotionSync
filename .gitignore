@@ -39,3 +39,8 @@ build/
 
 /src/main/resources/
 /dependency-reduced-pom.xml
+
+app.jar
+run.sh
+dependency-reduced-pom.xml
+log.txt

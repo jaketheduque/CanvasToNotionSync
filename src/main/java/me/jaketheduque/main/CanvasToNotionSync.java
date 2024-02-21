@@ -11,6 +11,7 @@ import me.jaketheduque.serializers.UpcomingEventDeserializer;
 import me.jaketheduque.util.MMLInterface;
 import me.jaketheduque.util.NotionInterface;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,8 +45,10 @@ public class CanvasToNotionSync {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         // Gets all upcoming MyMathLab homework
-        ChromeDriver driver = new ChromeDriver();
-        MMLInterface mmlInterface = new MMLInterface(driver, CANVAS_CLASSES_MAP.values().stream().filter(Class::isMmlEligible).findFirst().get());
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
+        ChromeDriver driver = new ChromeDriver(options);
+        MMLInterface mmlInterface = new MMLInterface(driver, null);
         List<UpcomingEvent> mmlHomework = mmlInterface.getUpcomingHomework();
         driver.quit();
 
