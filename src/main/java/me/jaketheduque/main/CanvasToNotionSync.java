@@ -45,12 +45,14 @@ public class CanvasToNotionSync {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         // Gets all upcoming MyMathLab homework
+        /* Removing MML feature for now due to Selenium errors
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
         ChromeDriver driver = new ChromeDriver(options);
         MMLInterface mmlInterface = new MMLInterface(driver, CANVAS_CLASSES_MAP.values().stream().filter(Class::isMmlEligible).findFirst().get());
         List<UpcomingEvent> mmlHomework = mmlInterface.getUpcomingHomework();
         driver.quit();
+        */
 
         // Gets the Canvas assignment IDs of assignments already added to the Notion page (does not matter if finished or not)
         List<String> ids = NotionInterface.getExistingAssignments();
@@ -68,8 +70,10 @@ public class CanvasToNotionSync {
         TypeFactory typeFactory = objectMapper.getTypeFactory();
         List<UpcomingEvent> eventsList = objectMapper.readValue(json, typeFactory.constructCollectionType(List.class, UpcomingEvent.class));
 
+        /*
         // Adds the MML assignments to the eventsList
         eventsList.addAll(mmlHomework);
+         */
 
         // Remove any null upcoming events (likely due to event not having linked assignment)
         eventsList.removeIf(Objects::isNull);
